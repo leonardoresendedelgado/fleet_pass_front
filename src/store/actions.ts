@@ -1,0 +1,1 @@
+export const OBTEM_CLIENTES = "OBTEM_CLIENTES";
