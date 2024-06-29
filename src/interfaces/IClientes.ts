@@ -1,8 +1,9 @@
+import IAtendimento from "./IAtendimentos";
 export default interface ICliente{
     id: number,
     Endereco: string,
     Cliente: string,
     IdentificadorCliente: number,
-    atendimentos: [],
+    atendimentos: IAtendimento[];
     ativo: boolean,
 }

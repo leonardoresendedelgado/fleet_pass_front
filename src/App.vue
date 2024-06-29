@@ -10,29 +10,11 @@
     </div>
     <div class="row main" style="margin: 0; padding: 0;">
       <div class="nav">
-        NAV
+        <Nav_Aside />
       </div>
       <div class="main_footer">
-        <div class="section">
-          <div class="card-filmes" v-for="cliente in clientes" :key="cliente.id">
-            {{ cliente.Cliente }} <br>
-            {{ cliente.Endereco }} <br>
-            {{ cliente.IdentificadorCliente }}<br>
-            {{ cliente.ativo }}<br>
-            <div v-if="cliente.atendimentos.length > 0 ">
-              <div v-for="(atendimento, index) in  cliente.atendimentos " :key="index" >
-                <br>
-                {{ atendimento.TransporteUtilizado}}<br>
-                {{ atendimento.Percurso}}<br>
-                {{ atendimento.data}}<br><br>
-              </div>
-            </div>
-            <div v-else>
-              Sem atendimentos registrados.
-            </div>
-          </div>
-        </div>
-        <!--<div class="footer">teste</div>-->
+        <router-view class="section"></router-view>
+        <div class="footer">teste</div>
       </div>
 
     </div>
@@ -42,22 +24,13 @@
 </template>
 
 <script lang="ts">
-import Nav_Aside from './components/Aside.vue';
-import IAtendimento from './interfaces/IAtendimentos';
-import { OBTEM_CLIENTES } from './store/actions';
-import { useStore } from 'vuex';
-import { key } from './store';
-import { computed, defineComponent } from 'vue';
+import Nav_Aside from './components/Aside.vue'
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'App',
-  setup() {
-    const store = useStore(key)
-    store.dispatch(OBTEM_CLIENTES)
-    return {
-      clientes: computed(() => store.state.clientes)
-      
-    }
+  components: {
+    Nav_Aside
   }
 })
 </script>
@@ -65,27 +38,28 @@ export default defineComponent({
 <style>
 .header {
   position: fixed;
-  background-color: black;
   width: 100vw;
   height: 70px;
   display: flex;
 }
 
 .logo {
-  background-color: #6e6b6b;
+  background-color: #202231e3;
   width: 255px;
   height: 70px;
   text-align: center;
   overflow: hidden;
+  border-right: solid 1px rgb(82, 82, 82);
 }
 
 .logo img {
   width: 80%;
-  margin-top: -50px;
+  height: 250px;
+  margin-top: -80px;
 }
 
 .header_avatar {
-  background-color: rgb(120, 121, 121);
+  background-color: #202231e3;
   flex-grow: 1;
   height: 70px;
 }
@@ -97,27 +71,33 @@ export default defineComponent({
 }
 
 .nav {
-  background-color: blue;
-  min-height: calc(100% - 70px);
+  background-color: #282a3c;
+  min-height: calc(100% - 140px);
   margin-top: 70px;
-  width: 255px;
   position: fixed;
+  position: absolute;
+
 }
 
 .main_footer {
-  width: calc(100% - 255px);
+  width: 100%;
   margin-top: 70px;
-  margin-left: 255px;
-  background-color: chartreuse;
+  background-color: rgba(255, 255, 255, 0.938);
 }
 
 .section {
-  background-color: rgb(3, 204, 204);
+  flex: 1;
+  padding: 20px;
 }
 
 .footer {
-  margin-top: -8px;
-  background-color: coral;
-  height: 70px;
+    background:  #202231;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    height: 70px;
+    width: 100%;
 }
 </style>

@@ -1,12 +1,13 @@
 import { RouteRecordRaw, createRouter, createMemoryHistory } from 'vue-router';
 import App from '@/App.vue';
-
+import Cliente_Dash from '../views/Clientes.vue'
 const rotas : RouteRecordRaw []=[
     {
-        path:'/',
-        name:'App',
-        component: App
+        path:'/clientes',
+        name:'Cliente_Dash',
+        component: Cliente_Dash
     }
+        
 ]
 const roteador = createRouter({
    history: createMemoryHistory(),
