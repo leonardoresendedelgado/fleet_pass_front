@@ -30,7 +30,7 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'App',
   components: {
-    Nav_Aside
+    Nav_Aside,
   }
 })
 </script>

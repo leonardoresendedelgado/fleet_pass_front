@@ -6,4 +6,5 @@ export default interface ICliente{
     IdentificadorCliente: number,
     atendimentos: IAtendimento[];
     ativo: boolean,
+    Unidade: string
 }
