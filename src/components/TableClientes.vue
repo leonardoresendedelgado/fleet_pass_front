@@ -14,6 +14,7 @@
                                 <th scope="col">Informações</th>
                             </tr>
                         </thead>
+                        <tbody class="table-group-divider">
                         <tr v-for="cliente in clientes" :key="cliente.id">
                             <th>{{ cliente.IdentificadorCliente }}</th>
                             <th>{{ cliente.Cliente }}</th>
@@ -32,13 +33,13 @@
                                 </button>
                             </th>
                         </tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
-    <div  @aoClick="modalCliente" :v-model="filtro = id"></div>
-    <modalAddClientes :mostrar="modalCliente != false" style="padding-top: 40px;" v-for="(cliente, index) in clienteEdite" :key="index" :cliente="cliente" >
+    <modalAddClientes :mostrar="modalCliente != false" style="padding-top: 40px;" v-for="cliente in clientesEdit" :key="cliente.id"  >
     <template v-slot:cabecalio>
       <div class="header_modal" style="text-align: center;">
         <h1>Novo cliente</h1>
@@ -79,17 +80,15 @@ import { OBTEM_CLIENTES } from '../store/actions';
 import { useStore } from 'vuex';
 import modalAddClientes from './modalAddClientes.vue';
 import { key } from '@/store';
-import ICliente from '@/interfaces/IClientes';
 export default defineComponent({
     name: 'Cliente_Table',
     components:{
         modalAddClientes
     },
-    emits: ['aoClick'],
     data() {
       return {
         modalCliente: false,
-        id: Number
+        id: 0
       }
     },
     props: {
@@ -100,18 +99,16 @@ export default defineComponent({
     },
     methods:{
         AbrirModelCliente(cliente: number){
-            this.$emit('aoClick', cliente)
-        },
-        modalCliente(id: number){
-            this.modalCliente =  this.model
-            this.id = id
+          this.modalCliente =  this.model
+          this.id = cliente
+          console.log(this.id)
         },
         FecharMOdalAddcliente(){
             this.modalCliente = false
         }
     },
     setup() {
-        const filtro = ref('')
+        const filtro = ref()
         const store = useStore(key)
         store.dispatch(OBTEM_CLIENTES)
         return {

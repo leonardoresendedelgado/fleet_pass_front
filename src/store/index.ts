@@ -17,6 +17,7 @@ export const store = createStore<Estado>({
     mutations: {
         [CLIENTES](state, cliente) {
             if (cliente.length >= 1) {
+
                 state.clientes = cliente
             }
             if (cliente.status) {
@@ -34,7 +35,7 @@ export const store = createStore<Estado>({
             }
         },
         async [OBTEM_CLIENTES]({ commit }) {
-            http.get('clientes')
+            http.get('unidades')
                 .then((resposta) => {
                     commit(CLIENTES, resposta.data)
                 })
