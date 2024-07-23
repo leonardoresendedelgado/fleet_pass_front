@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid" style="margin: auto; text-align: center;">
-    <h1>Clientes</h1>
+    <h1>Unidades</h1>
     <div class="row">
       <div class="col-10" style="margin: auto;">
         <div class="card">
@@ -15,7 +15,7 @@
                     <path fill-rule="evenodd"
                       d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5" />
                   </svg>
-                  <p style="margin:auto auto auto 10px;">Adicionar Cliente</p>
+                  <p style="margin:auto auto auto 10px;">Adicionar Unidade</p>
                 </button>
               </th>
             </tr>
@@ -29,7 +29,7 @@
   <modalAddClientes :mostrar="modalClienteAdd != false" style="padding-top: 40px;">
     <template v-slot:cabecalio>
       <div class="header_modal" style="text-align: center;">
-        <h1>Novo cliente</h1>
+        <h1>Nova Unidade</h1>
       </div>
     </template>
     <template v-slot:corpo>

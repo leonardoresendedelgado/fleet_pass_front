@@ -1,9 +1,9 @@
 <template>
-  <div class="container-fluid" style="margin: auto; text-align: center;">
+  <div class="container-fluid" style="margin: auto; text-align: center;"  >
     <div class="row">
       <div class="col-10" style="margin: auto;">
         <div class="card">
-          <table class="table table-hover">
+          <table class="table table-striped">
             <thead>
               <tr>
                 <th scope="col">Identificador</th>
@@ -46,7 +46,7 @@
     :key="cliente.id">
     <template v-slot:cabecalio>
       <div class="header_modal" style="text-align: center;">
-        <h1>Novo cliente</h1>
+        <h1>Nova Unidade</h1>
       </div>
     </template>
     <template v-slot:corpo>
@@ -112,6 +112,7 @@ export default defineComponent({
     }
   },
   setup() {
+    
     const filtro = ref()
     const store = useStore(key)
     store.dispatch(OBTEM_CLIENTES)
@@ -119,7 +120,8 @@ export default defineComponent({
       clientes: computed(() => store.state.clientes),
       clientesEdit: computed(() => store.state.clientes.filter(it => it.id == filtro.value)),
       filtro,
-      store
+      store,
+      
     }
   }
 })

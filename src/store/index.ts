@@ -1,8 +1,8 @@
 import ICliente from "@/interfaces/IClientes";
 import { InjectionKey } from "vue";
 import { createStore, Store, useStore as useVueStore } from "vuex";
-import { OBTEM_CLIENTES, ADICIONA_CLIENTES } from './actions'
-import { CLIENTES, ADD_CLIENTES } from "./mutations";
+import { OBTEM_CLIENTES, ADICIONA_CLIENTES, EDITA_CLIENTES } from './actions'
+import { CLIENTES, ADD_CLIENTES} from "./mutations";
 import http from '../http'
 export interface Estado {
     clientes: ICliente[]
@@ -38,6 +38,15 @@ export const store = createStore<Estado>({
             http.get('unidades')
                 .then((resposta) => {
                     commit(CLIENTES, resposta.data)
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        },
+        async [EDITA_CLIENTES]({ commit },CLIENTES) {
+            http.put( `/unidades/${CLIENTES.id}`,CLIENTES)
+                .then((resposta) => {
+                    this.dispatch(OBTEM_CLIENTES)
                 })
                 .catch((err) => {
                     console.log(err)
