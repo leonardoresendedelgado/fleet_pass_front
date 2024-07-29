@@ -1,8 +1,9 @@
 import IAtendimento from "./IAtendimentos";
-export default interface ICliente{
+import ICliente from "./ICliente";
+export default interface IUnidade{
     id: number,
     Endereco: string,
-    Cliente: string,
+    Cliente: ICliente,
     IdentificadorCliente: number,
     atendimentos: IAtendimento[];
     ativo: boolean,

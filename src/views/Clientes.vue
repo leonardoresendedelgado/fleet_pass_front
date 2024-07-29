@@ -7,7 +7,7 @@
           <table class="table table-sm">
             <tr class="tr_color">
               <th>
-                <button type="button" class="btn btn-success padrao" @click="AbrieModalAddCliente">
+                <button type="button" class="btn btn-success padrao" @click="AbrieModalAddUnidade">
                   <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
                     class="bi bi-person-plus" viewBox="0 0 16 16">
                     <path
@@ -25,8 +25,8 @@
       </div>
     </div>
   </div>
-  <Cliente_Table />
-  <modalAddClientes :mostrar="modalClienteAdd != false" style="padding-top: 40px;">
+  <Unidade_Table />
+  <modalModelo :mostrar="modalClienteAdd != false" style="padding-top: 40px;">
     <template v-slot:cabecalio>
       <div class="header_modal" style="text-align: center;">
         <h1>Nova Unidade</h1>
@@ -56,28 +56,28 @@
       </form>
     </template>
     <template v-slot:rodape>
-      <button type="button" class="btn btn-danger" @click="FecharMOdalAddcliente">Fechar</button>
-      <button type="submit" class="btn btn-success" @click="AddCliente">Adicionar</button>
+      <button type="button" class="btn btn-danger" @click="FecharMOdalAddUnidade">Fechar</button>
+      <button type="submit" class="btn btn-success" @click="AddUnidade">Adicionar</button>
     </template>
-  </modalAddClientes>
+  </modalModelo>
   
 </template>
   <script lang="ts">
-  import { computed, defineComponent } from 'vue';
-  import {  ADICIONA_CLIENTES } from '../store/actions';
-  import { useStore } from 'vuex';
-  import modalAddClientes from '@/components/modalAddClientes.vue';
-  import Cliente_Table from '../components/TableClientes.vue'
+  import {  defineComponent } from 'vue';
+  import {  ADICIONA_UNIDADES, OBTEM_UNIDADES } from '../store/actions';
+  import { useStore } from '@/store';
+  import modalModelo from '@/components/modal.vue';
+  import Unidade_Table from '../components/TableUnidade.vue'
   export default defineComponent({
     name: 'Cliente_Dash',
     components: {
-      modalAddClientes,
-      Cliente_Table
+      modalModelo,
+      Unidade_Table
     },
     data() {
       return {
         modalClienteAdd: false,
-        opt: 'inicio'
+        opt: true
       }
     },
     props: {
@@ -87,23 +87,31 @@
       }
     },
     methods: {
-      AbrieModalAddCliente() {
+      AbrieModalAddUnidade() {
         this.modalClienteAdd = this.model
       },
-      FecharMOdalAddcliente() {
+      FecharMOdalAddUnidade() {
         this.modalClienteAdd = false
       },
-      AddCliente() {
+      AddUnidade() {
         var form = document.querySelectorAll('.form-control')
-        const Cliente = {
+        const Unidade = {
           Cliente: (form[0] as HTMLInputElement).value,
           Unidade: (form[1] as HTMLInputElement).value,
           Endereco: (form[2] as HTMLInputElement).value,
           IdentificadorCliente: (form[3] as HTMLInputElement).value,
           ativo: this.opt
         }
-        this.store.dispatch(ADICIONA_CLIENTES, Cliente)
-          .then(this.FecharMOdalAddcliente)
+        this.store.dispatch(ADICIONA_UNIDADES, Unidade)
+          .then(this.FecharMOdalAddUnidade)
+          window.location.reload
+          setTimeout(() => {
+                this.store.dispatch(OBTEM_UNIDADES)
+                this.$router.push('/clientes');
+            }, 1000)
+            const apiSaveMethod = async () => {
+                return new Promise<void>((resolve) => setTimeout(resolve, 500));
+            };
       }
     },
     setup() {

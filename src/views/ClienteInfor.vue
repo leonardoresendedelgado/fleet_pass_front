@@ -8,22 +8,22 @@
                 <div class="input-group col-md-6">
                     <span class="input-group-text" id="basic-addon1">Cliente:</span>
                     <input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1"
-                        v-bind:value="clienteLoc[0].Cliente" required disabled>
+                        v-bind:value="unidadeLoc[0].Cliente.nome" required disabled>
                 </div>
                 <div class="input-group col-md-6">
                     <span class="input-group-text" id="basic-addon1">Unidade:</span>
                     <input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1"
-                        v-bind:value="clienteLoc[0].Unidade" required disabled>
+                        v-bind:value="unidadeLoc[0].Unidade" required disabled>
                 </div>
                 <div class="input-group col-md-10" style="margin-top: 20px; width: 100%;">
                     <span class="input-group-text" id="basic-addon1">Endereço:</span>
                     <input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1"
-                        v-bind:value="clienteLoc[0].Endereco" required disabled>
+                        v-bind:value="unidadeLoc[0].Endereco" required disabled>
                 </div>
                 <div class="input-group col-md-6" style="margin-top: 20px;">
                     <span class="input-group-text" id="basic-addon1">Identificação:</span>
                     <input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1"
-                        v-bind:value="clienteLoc[0].IdentificadorCliente" required disabled>
+                        v-bind:value="unidadeLoc[0].IdentificadorCliente" required disabled>
                 </div>
                 <div class="input-group col-md-3" style="margin-top: 20px;">
                     <span class="input-group-text" id="basic-addon1">Status:</span>
@@ -35,7 +35,7 @@
                     </select>
                 </div>
                 <div class=" col-md-6" style="margin-top: 20px;">
-                    <div v-if="clienteLoc[0].atendimentos.length == 0" class="input-group">
+                    <div v-if="unidadeLoc[0].atendimentos.length == 0" class="input-group">
                         <span class="input-group-text" id="basic-addon1">Cliente:</span>
                         <input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1"
                             value="N/A Atendimentos" required disabled>
@@ -43,7 +43,7 @@
                     <div v-else class="input-group">
                         <span class="input-group-text" id="basic-addon1">Cliente:</span>
                         <input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1"
-                            v-bind:value="clienteLoc[0].atendimentos" required disabled>
+                            v-bind:value="unidadeLoc[0].atendimentos" required disabled>
                     </div>
                     <div class=" col-md-10" style=" display: flex; margin: 10px -20px 10px 5px; ">
                         <button type="button" class="btn btn-light" @click="edit" style="margin-right: 10px;"  >
@@ -55,7 +55,7 @@
                             </svg>
                         </button>
                         <button type="button" class="btn btn-success" id="save" 
-                            style=" display: none; margin-right: 10px;" @click="EditCliente">
+                            style=" display: none; margin-right: 10px;" @click="EditUnidade">
                             Salvar
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-floppy" viewBox="0 0 16 16">
@@ -87,8 +87,8 @@
 </template>
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue';
-import { CLIENTES } from '@/store/mutations';
-import { EDITA_CLIENTES, OBTEM_CLIENTES } from '../store/actions';
+import { UNIDADES } from '@/store/mutations';
+import { EDITA_UNIDADES, OBTEM_UNIDADES } from '../store/actions';
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
 import { key } from '@/store';
@@ -119,10 +119,10 @@ export default defineComponent({
                 (e as HTMLInputElement).disabled = true
             })
         },
-        EditCliente() {
+        EditUnidade() {
             var form = document.querySelectorAll('.form-control')
             var btnSave = document.getElementById("save") as HTMLButtonElement
-            const Cliente = {
+            const Unidade= {
                 id: this.id,
                 Cliente: (form[0] as HTMLInputElement).value,
                 Unidade: (form[1] as HTMLInputElement).value,
@@ -133,10 +133,10 @@ export default defineComponent({
             form.forEach(e => {
                 (e as HTMLInputElement).disabled = true
             })
-            this.store.dispatch(EDITA_CLIENTES, Cliente)
+            this.store.dispatch(EDITA_UNIDADES, Unidade)
             window.location.reload
             setTimeout(() => {
-                this.store.dispatch(OBTEM_CLIENTES)
+                this.store.dispatch(OBTEM_UNIDADES)
                 this.$router.push('/clientes');
             }, 1000)
             const apiSaveMethod = async () => {
@@ -148,17 +148,17 @@ export default defineComponent({
     setup() {
         const store = useStore(key);
         const filtro = ref('');
-        store.dispatch(CLIENTES);
+        store.dispatch(UNIDADES);
         const rota = useRoute()
         const id = Number(rota.params.id)
-        const clienteLoc = computed(() => {
-            return store.state.clientes.filter(cliente => cliente.id == id);
+        const unidadeLoc = computed(() => {
+            return store.state.Undiades.filter(UNIDADE => UNIDADE.id == id);
         });
-        const opt = clienteLoc.value[0].ativo
+        const opt = unidadeLoc.value[0].ativo
         return {
             opt,
             filtro,
-            clienteLoc,
+            unidadeLoc,
             id,
             store
         };

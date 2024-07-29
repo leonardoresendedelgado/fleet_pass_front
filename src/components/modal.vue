@@ -19,7 +19,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-    name: 'model_addClientes',
+    name: 'model_modelo',
     props: {
         mostrar: {
             type: Boolean,

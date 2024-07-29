@@ -1,5 +1,9 @@
 <template>
+  
   <div class="container-fluid " style="padding: 0%;">
+    <div class="Notificacoes">
+    <Notificacoes />
+  </div>
     <div class="row header" style="margin: 0; padding: 0;">
       <div class="logo">
         <img src="../public/LG250.png" alt="">
@@ -26,16 +30,28 @@
 <script lang="ts">
 import Nav_Aside from './components/Aside.vue'
 import { defineComponent } from 'vue';
+import Notificacoes from './components/Notificacoes.vue';
 
 export default defineComponent({
   name: 'App',
   components: {
     Nav_Aside,
+    Notificacoes
   }
 })
 </script>
 
 <style>
+.Notificacoes{
+
+  position: absolute; /* Retira do fluxo normal do documento */
+    top: 15%; /* Define a posição em relação ao elemento pai (container) */
+    right: 0;
+    width:30%; /* Faz a sobreposição ocupar todo o espaço horizontal */
+    height: auto; /* Faz a sobreposição ocupar todo o espaço vertical */
+    z-index: 10; /* Garante que este elemento esteja sobre outros com z-index menor */
+    /* Outros estilos, como fundo semitransparente */
+}
 .header {
   position: fixed;
   width: 100vw;

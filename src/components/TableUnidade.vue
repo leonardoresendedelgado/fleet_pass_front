@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid" style="margin: auto; text-align: center;"  >
+  <div class="container-fluid" style="margin: auto; text-align: center;">
     <div class="row">
       <div class="col-10" style="margin: auto;">
         <div class="card">
@@ -12,21 +12,22 @@
                 <th scope="col">Atendimentos</th>
                 <th scope="col">Status</th>
                 <th scope="col">Informações</th>
+                <th scope="col">Delete</th>
               </tr>
             </thead>
 
             <tbody class="table-group-divider">
 
-              <tr v-for="cliente in clientes" :key="cliente.id">
-                <th>{{ cliente.IdentificadorCliente }}</th>
-                <th>{{ cliente.Cliente }}</th>
-                <th>{{ cliente.Unidade }}</th>
-                <th v-if="cliente.atendimentos.length != 0">{{ cliente.atendimentos }}</th>
+              <tr v-for="unidade in Unidades" :key="unidade.id">
+                <th>{{ unidade.IdentificadorCliente }}</th>
+                <th>{{ unidade.Cliente.nome }}</th>
+                <th>{{ unidade.Unidade }}</th>
+                <th v-if="unidade.atendimentos.length != 0">{{ unidade.atendimentos }}</th>
                 <th v-else>N/A</th>
-                <th v-if="cliente.ativo === true">&#128994;Ativo</th>
+                <th v-if="unidade.ativo === true">&#128994;Ativo</th>
                 <th v-else>&#128308;Inativo</th>
                 <th>
-                  <router-link :to="'/cliente/' + cliente.id" style="color: black" >
+                  <router-link :to="`/cliente/${unidade.id}` " style="color: black">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                       class="bi bi-info-circle" viewBox="0 0 16 16">
                       <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
@@ -35,6 +36,17 @@
                     </svg>
                   </router-link>
                 </th>
+                <th>
+                  <button type="button" class="btn" @click="DeleteUnidades(unidade.id)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                      class="bi bi-trash" viewBox="0 0 16 16">
+                      <path
+                        d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                      <path
+                        d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+                    </svg>
+                  </button>
+                </th>
               </tr>
             </tbody>
           </table>
@@ -42,8 +54,8 @@
       </div>
     </div>
   </div>
-  <modalAddClientes :mostrar="modalCliente != false" style="padding-top: 40px;" v-for="cliente in clientesEdit"
-    :key="cliente.id">
+  <modalModelo :mostrar="modalCliente != false" style="padding-top: 40px;" v-for="unidade in UnidadesEdit"
+    :key="unidade.id">
     <template v-slot:cabecalio>
       <div class="header_modal" style="text-align: center;">
         <h1>Nova Unidade</h1>
@@ -76,18 +88,18 @@
       <button type="button" class="btn btn-danger" @click="FecharMOdalAddcliente">Fechar</button>
       <button type="submit" class="btn btn-success">Adicionar</button>
     </template>
-  </modalAddClientes>
+  </modalModelo>
 </template>
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue';
-import { OBTEM_CLIENTES } from '../store/actions';
+import { OBTEM_UNIDADES, DELETE_UNIDADES } from '../store/actions';
 import { useStore } from 'vuex';
-import modalAddClientes from './modalAddClientes.vue';
+import modalModelo from './modal.vue';
 import { key } from '@/store';
 export default defineComponent({
-  name: 'Cliente_Table',
+  name: 'Undiade_Table',
   components: {
-    modalAddClientes
+    modalModelo
   },
   data() {
     return {
@@ -102,28 +114,36 @@ export default defineComponent({
     }
   },
   methods: {
-    AbrirModelCliente(cliente: number) {
+    AbrirModelUnidade(cliente: number) {
       this.modalCliente = this.model
       this.id = cliente
       console.log(this.id)
     },
     FecharMOdalAddcliente() {
       this.modalCliente = false
+    },
+    DeleteUnidades(id: number){
+      this.store.dispatch(DELETE_UNIDADES, id)
+      window.location.reload
     }
   },
   setup() {
-    
+
     const filtro = ref()
     const store = useStore(key)
-    store.dispatch(OBTEM_CLIENTES)
+    store.dispatch(OBTEM_UNIDADES)
     return {
-      clientes: computed(() => store.state.clientes),
-      clientesEdit: computed(() => store.state.clientes.filter(it => it.id == filtro.value)),
+      Unidades: computed(() => store.state.Undiades),
+      UnidadesEdit: computed(() => store.state.Undiades.filter(it => it.id == filtro.value)),
       filtro,
       store,
-      
+
     }
   }
 })
 </script>
-<style scoped></style>
+<style scoped>
+.table td, .table th {
+  vertical-align: 0;
+}
+</style>

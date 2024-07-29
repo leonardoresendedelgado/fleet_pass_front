@@ -1,56 +1,109 @@
-import ICliente from "@/interfaces/IClientes";
+import IUnidade from "@/interfaces/IUnidade";
 import { InjectionKey } from "vue";
 import { createStore, Store, useStore as useVueStore } from "vuex";
-import { OBTEM_CLIENTES, ADICIONA_CLIENTES, EDITA_CLIENTES } from './actions'
-import { CLIENTES, ADD_CLIENTES} from "./mutations";
+import { OBTEM_UNIDADES, ADICIONA_UNIDADES, EDITA_UNIDADES, DELETE_UNIDADES } from './actions'
+import INotifica from "@/interfaces/INotificaRsposta";
+import { INotificacao, TipoNotificacao } from "@/interfaces/INotificacao";
+import { UNIDADES, INFORME_ERROS, INFORME_SUCESSO, AVISO, NOTIFICA} from "./mutations";
 import http from '../http'
+import useNotificador from '@/hooks/notificador'
+const { notificar } = useNotificador()
 export interface Estado {
-    clientes: ICliente[]
+    // estado interface unidade
+    Undiades: IUnidade[],
+
+    //estado interface notificações 
+    notificacoes:INotificacao[],
+    sucesso: INotifica[],
+    aviso: INotifica[],
+    erro: INotifica[],
 }
 
 export const key: InjectionKey<Store<Estado>> = Symbol()
 
 export const store = createStore<Estado>({
     state: {
-        clientes:[]
+        // estado de unidades
+        Undiades:[],
+        // estado das notificações
+        notificacoes:[],
+        sucesso:[],
+        aviso:[],
+        erro:[]
+
+
     },
     mutations: {
-        [CLIENTES](state, cliente) {
+        [UNIDADES](state, cliente) {
             if (cliente.length >= 1) {
 
-                state.clientes = cliente
+                state.Undiades = cliente
             }
             if (cliente.status) {
-                state.clientes.push(cliente.resposta)
+                state.Undiades.push(cliente.resposta)
             }
+        },
+        // mutatios de Notificações 
+        [INFORME_ERROS](state, erro ){
+            state.erro.push(erro)
+            if(state.erro.length >0){notificar(TipoNotificacao.FALHA, "🤯 Temos um erro 🚨",
+            `${erro.response.data} `)}
+        },
+        [INFORME_SUCESSO](state, unidade){
+            state.sucesso.push(unidade)
+            if(state.sucesso.length >0){notificar(TipoNotificacao.SUCESSO, `😃 Parece que tudo correu bem 👍 `,`${unidade}`)}
+        },
+        [AVISO](state, aviso){
+            state.aviso.push(aviso)
+            if(state.aviso.length >0){notificar(TipoNotificacao.ATENCAO, `${aviso.name}`,
+            `${aviso.message} `)}
+        },
+        [NOTIFICA](state, novaNotificacao: INotificacao){
+            novaNotificacao.id = new Date().getTime()
+            state.notificacoes.push(novaNotificacao)
+            setTimeout(()=>{
+                state.notificacoes = state.notificacoes.filter(Notificacao =>
+                    Notificacao.id != novaNotificacao.id)
+            },4000)
         }
     },
     actions: {
-        async [ADICIONA_CLIENTES]({commit},CLIENTES){
+        async [ADICIONA_UNIDADES]({commit},Unidade){
             try {
-                await http.post('clientes', CLIENTES)
+                await http.post('/unidades', Unidade)
+                .then((resposta)=>commit(INFORME_SUCESSO, resposta.data.message))
                 
             }catch(err)  {
                 console.log(err)
+                commit(INFORME_ERROS, err)
             }
         },
-        async [OBTEM_CLIENTES]({ commit }) {
-            http.get('unidades')
+        async [OBTEM_UNIDADES]({ commit }) {
+            http.get('/unidades')
                 .then((resposta) => {
-                    commit(CLIENTES, resposta.data)
+                    commit(UNIDADES, resposta.data)
                 })
                 .catch((err) => {
-                    console.log(err)
+                    commit(INFORME_ERROS, err)
                 })
         },
-        async [EDITA_CLIENTES]({ commit },CLIENTES) {
+        async [EDITA_UNIDADES]({ commit },CLIENTES) {
             http.put( `/unidades/${CLIENTES.id}`,CLIENTES)
                 .then((resposta) => {
-                    this.dispatch(OBTEM_CLIENTES)
+                    commit(INFORME_SUCESSO, resposta.data.message)
                 })
                 .catch((err) => {
-                    console.log(err)
+                    commit(INFORME_ERROS, err)
                 })
+        },
+        async [DELETE_UNIDADES]({commit}, id:number){
+            http.delete(`/unidades/${id}`)
+            .then((resposta) => {
+                this.dispatch(OBTEM_UNIDADES)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
         }
     }
 })
