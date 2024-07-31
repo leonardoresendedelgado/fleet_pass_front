@@ -18,7 +18,10 @@
 
             <tbody class="table-group-divider">
 
-              <tr v-for="unidade in Unidades" :key="unidade.id">
+              <tr v-for="unidade in Unidades" :key="unidade.id" >
+                <div v-if="!unidade.IdentificadorCliente">
+                  <th>Não existe undiades cadastradas</th>
+                </div>
                 <th>{{ unidade.IdentificadorCliente }}</th>
                 <th>{{ unidade.Cliente.nome }}</th>
                 <th>{{ unidade.Unidade }}</th>
@@ -27,7 +30,7 @@
                 <th v-if="unidade.ativo === true">&#128994;Ativo</th>
                 <th v-else>&#128308;Inativo</th>
                 <th>
-                  <router-link :to="`/cliente/${unidade.id}` " style="color: black">
+                  <router-link :to="`/unidade/${unidade.id}` " style="color: black;" class="info">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                       class="bi bi-info-circle" viewBox="0 0 16 16">
                       <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
@@ -37,7 +40,7 @@
                   </router-link>
                 </th>
                 <th>
-                  <button type="button" class="btn" @click="DeleteUnidades(unidade.id)">
+                  <button type="button" class="btn del" @click="DeleteUnidades(unidade.id)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                       class="bi bi-trash" viewBox="0 0 16 16">
                       <path
@@ -125,6 +128,13 @@ export default defineComponent({
     DeleteUnidades(id: number){
       this.store.dispatch(DELETE_UNIDADES, id)
       window.location.reload
+          setTimeout(() => {
+                this.store.dispatch(OBTEM_UNIDADES)
+                this.$router.push('/unidades');
+            }, 1000)
+            const apiSaveMethod = async () => {
+                return new Promise<void>((resolve) => setTimeout(resolve, 500));
+            };
     }
   },
   setup() {
@@ -145,5 +155,17 @@ export default defineComponent({
 <style scoped>
 .table td, .table th {
   vertical-align: 0;
+}
+.del:hover{
+  background-color: red;
+  transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+.info:hover{
+  border-radius: .25rem;
+  padding: .300rem .800rem .700rem .800rem;
+  background-color: rgba(30, 7, 245, 0.418);
+  border: 1px solid transparent;
+  line-height: 1.5;
+
 }
 </style>

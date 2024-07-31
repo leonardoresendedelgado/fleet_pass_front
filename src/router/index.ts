@@ -4,12 +4,12 @@ import Cliente_Dash from '../views/Clientes.vue';
 import Clente_infor from '../views/ClienteInfor.vue'
 const rotas : RouteRecordRaw []=[
     {
-        path:'/clientes',
+        path:'/unidades',
         name:'Cliente_Dash',
         component: Cliente_Dash
     },
     {
-        path:'/cliente/:id',
+        path:'/unidade/:id',
         name:'Clente_infor',
         component: Clente_infor
     }

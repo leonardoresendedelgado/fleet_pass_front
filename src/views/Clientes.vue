@@ -35,7 +35,10 @@
     <template v-slot:corpo>
       <form class="row g-3">
         <div class="col-md-6">
-          <input type="text" class="form-control capture" placeholder="Cliente" required>
+          <select  class="form-control" required v-model="opt_cliente">
+            <option  value="null">Cliente</option>
+           <option v-for="cliente in clientes" :key="cliente.id" :value="cliente.nome">{{cliente.nome}}</option>
+          </select>
         </div>
         <div class="col-md-6">
           <input type="text" class="form-control capture" placeholder="Unidade" required>
@@ -63,9 +66,9 @@
   
 </template>
   <script lang="ts">
-  import {  defineComponent } from 'vue';
-  import {  ADICIONA_UNIDADES, OBTEM_UNIDADES } from '../store/actions';
-  import { useStore } from '@/store';
+  import {  computed, defineComponent } from 'vue';
+  import {  ADICIONA_UNIDADES, OBTEM_UNIDADES, OBTEM_CLIENTES } from '../store/actions';
+  import { key, useStore } from '@/store';
   import modalModelo from '@/components/modal.vue';
   import Unidade_Table from '../components/TableUnidade.vue'
   export default defineComponent({
@@ -77,7 +80,8 @@
     data() {
       return {
         modalClienteAdd: false,
-        opt: true
+        opt: true,
+        opt_cliente:null
       }
     },
     props: {
@@ -96,7 +100,7 @@
       AddUnidade() {
         var form = document.querySelectorAll('.form-control')
         const Unidade = {
-          Cliente: (form[0] as HTMLInputElement).value,
+          Cliente: this.opt_cliente,
           Unidade: (form[1] as HTMLInputElement).value,
           Endereco: (form[2] as HTMLInputElement).value,
           IdentificadorCliente: (form[3] as HTMLInputElement).value,
@@ -107,7 +111,7 @@
           window.location.reload
           setTimeout(() => {
                 this.store.dispatch(OBTEM_UNIDADES)
-                this.$router.push('/clientes');
+                this.$router.push('/unidades');
             }, 1000)
             const apiSaveMethod = async () => {
                 return new Promise<void>((resolve) => setTimeout(resolve, 500));
@@ -116,7 +120,9 @@
     },
     setup() {
       const store = useStore()
+      store.dispatch(OBTEM_CLIENTES)
       return {
+        clientes: computed(()=> store.state.Clientes),
         store
       }
     }

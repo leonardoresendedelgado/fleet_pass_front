@@ -1,5 +1,5 @@
-
-export default interface ICliente{
+export default interface IClientes{
     id: number,
     nome: string,
+    Unidades: number
 }
